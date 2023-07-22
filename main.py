@@ -9,8 +9,8 @@ if __name__ == "__main__":
     print("Loading data...")
 
     # Get the data
-    training_data = get_mnist("data/mnist_train.csv", 7000, for_convolution=True)
-    test_data = get_mnist("data/mnist_test.csv", 1000, for_convolution=True)
+    training_data = get_mnist("data/mnist_train.csv", 60000, for_convolution=True)
+    test_data = get_mnist("data/mnist_test.csv", 10000, for_convolution=True)
 
     print("Data loaded!")
 
@@ -27,12 +27,12 @@ if __name__ == "__main__":
     ]
 
     # Create the network
-    # neural_network = Network(network)
-    neural_network = Network("network.txt")  # Load the network from a file
+    neural_network = Network(network)
+    # neural_network = Network("network.txt")  # Load the network from a file
     neural_network.set_input(training_data, test_data)  # Set the input of the network
 
     print("Training...")  # Train the network
-    neural_network.train(epochs=1, learning_rate=0.08, debug=True)
+    neural_network.train(epochs=10, learning_rate=0.1, debug=True)
     print("Training done!")
 
     # neural_network.draw_graph()
@@ -40,4 +40,4 @@ if __name__ == "__main__":
     # neural_network.draw_errors()
 
     # Save the network
-    neural_network.save("network.txt")
+    # neural_network.save("network.txt")
