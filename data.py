@@ -31,7 +31,10 @@ class Image:
 
 
 def get_mnist(
-    path: str, size: int = 1000, for_convolution: bool = False
+    path: str,
+    size: int = 1000,
+    for_convolution: bool = False,
+    image_size: tuple[int, int] = (28, 28),
 ) -> List[Image]:
     """
     Gets the MNIST dataset.
@@ -86,6 +89,8 @@ def get_mnist(
     # If the images are for convolution, reshape them
     if for_convolution:
         for i in range(len(images)):
-            images[i].image = np.reshape(images[i].image, (1, 28, 28))
+            images[i].image = np.reshape(
+                images[i].image, (1, image_size[0], image_size[1])
+            )
 
     return images
