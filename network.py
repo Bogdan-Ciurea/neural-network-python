@@ -6,6 +6,7 @@ from neural_objects.end_layer import Softmax
 
 from neural_objects.default_layer import DefaultLayer
 from neural_objects.layer import Convolutional, Layer, Reshape
+from neural_objects.learning_rate_functions import LearningRateFunction
 
 
 class Network:
@@ -40,6 +41,8 @@ class Network:
         # This will be the images that the network misread
         self.misread_images: List[Image] = []
 
+        self.learning_rate_function = LearningRateFunction().linear
+
     def set_input(self, training_data: List[Image], test_data: List[Image]) -> None:
         """
         This function will set the input for the network.
@@ -53,6 +56,25 @@ class Network:
 
         self.training_data = training_data
         self.test_data = test_data
+
+    def set_learning_rate_function(self, function: str) -> None:
+        """
+        This function will set the learning rate function for the network.
+
+        :param function: The learning rate function.
+        :type function: function
+        """
+
+        if function == "linear":
+            self.learning_rate_function = LearningRateFunction().linear
+        elif function == "custom_1":
+            self.learning_rate_function = LearningRateFunction().custom_1
+        elif function == "custom_2":
+            self.learning_rate_function = LearningRateFunction().custom_2
+        elif function == "exponential":
+            self.learning_rate_function = LearningRateFunction().exponential
+        else:
+            print("The function that you have entered does not exist!")
 
     def test(self, save_errors: bool = False) -> float:
         """
@@ -110,7 +132,8 @@ class Network:
 
         # actual training
         for e in range(epochs):
-            tests_results = []
+            correct_tests_results: int = 0
+            incorrect_tests_results: int = 0
 
             for image in self.training_data:
                 # transform the data
@@ -128,23 +151,31 @@ class Network:
 
                 # see if the output was correct
                 if np.argmax(output) == image.label:
-                    tests_results.append(1)
+                    correct_tests_results += 1
                 else:
-                    tests_results.append(0)
+                    incorrect_tests_results += 1
 
                 # get the error
                 error: np.ndarray = output - expected
 
                 # use the error for back propagation
                 for obj in reversed(self.network):
-                    error = obj.backward(error, learning_rate)
-                    # error = obj.backward(error, np.exp(-learning_rate*e) / 5)
-                    # error = obj.backward(error, (1-sigmoid(learning_rate*e)/2.5)
+                    error = obj.backward(
+                        error, self.learning_rate_function(learning_rate, e)
+                    )
 
             if e + 1 == epochs:
-                tests_tuple = [sum(tests_results) / len(tests_results), self.test(True)]
+                tests_tuple = [
+                    correct_tests_results
+                    / (correct_tests_results + incorrect_tests_results),
+                    self.test(True),
+                ]
             else:
-                tests_tuple = [sum(tests_results) / len(tests_results), self.test()]
+                tests_tuple = [
+                    correct_tests_results
+                    / (correct_tests_results + incorrect_tests_results),
+                    self.test(),
+                ]
 
             if debug:
                 print("----------------")

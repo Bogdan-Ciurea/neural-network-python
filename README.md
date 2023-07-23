@@ -42,10 +42,30 @@ Furthermore you can change the activation function of the layers by just adding 
 
 The available activation functions are:
 
+- Linear
 - Tanh
 - ReLU
+- Leaky ReLU
+- ELU
+- SELU
+- Binary Step
 - Sigmoid
+- Swish
 - Softmax
+
+### Learning Rate
+
+The learning rate can be changed by changing of the neural network is going to be changed in two places. The first place is in the `main.py` file, in the `learning_rate` variable. The second place is in the `neural_network/learning_rate_functions.py` file, that contain the learning rate functions. The learning rate functions are imported in the `main.py` file and are used in the `NeuralNetwork` class.
+
+The two custom learning rate functions are:
+
+```
+np.exp(-learning_rate * epoch) / 5  and
+1 - sigmoid(learning_rate * epoch) / 2.5
+```
+
+These 3 functions (the custom + the exponential) can be seen as:
+![Learning Functions](results/learning_functions.png)
 
 ## Data
 

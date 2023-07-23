@@ -30,6 +30,9 @@ if __name__ == "__main__":
     neural_network = Network(network)
     # neural_network = Network("network.txt")  # Load the network from a file
     neural_network.set_input(training_data, test_data)  # Set the input of the network
+    neural_network.set_learning_rate_function(
+        "linear"
+    )  # Set the learning rate function
 
     print("Training...")  # Train the network
     neural_network.train(epochs=10, learning_rate=0.1, debug=True)
